@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Eyego Frontend Internship - Technical Task
+
+A responsive sales analytics dashboard built to fulfill the technical assessment for the Eyego Frontend Internship position. This project showcases a modern frontend stack and best practices, including component-based architecture, state management, and a focus on user experience.
+
+![Dashboard Screenshot](path_to_your_screenshot.png)
+_(**Note**: Remember to take a screenshot of your finished dashboard and add it to your repository. Replace the path above with the actual path to your image.)_
+
+---
+
+## Features
+
+- **User Authentication**: Secure login flow using a mocked API and Redux Toolkit for state management.
+- **Dynamic Data Table**: A feature-rich table displaying sales data with:
+  - **Client-side Filtering**: Instantly search the data by product name.
+  - **Column Sorting**: Sort data by any column in ascending or descending order.
+  - **Pagination**: Efficiently navigate through large datasets.
+- **Interactive Chart**: A responsive bar chart from Recharts visualizing total sales revenue per month.
+- **Responsive Design**: A mobile-first approach ensuring a seamless experience on all devices, from mobile phones to desktops.
+- **Asynchronous Operations**: Loading and error states are handled gracefully for all data-fetching and authentication processes.
+
+---
+
+## Tech Stack
+
+- **Framework**: Next.js (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Redux Toolkit
+- **Charting**: Recharts
+- **Icons**: Lucide React
+
+---
 
 ## Getting Started
 
-First, run the development server:
+Follow these instructions to set up and run the project locally.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js (v18 or later)
+- npm, yarn, or pnpm
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Setup and Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Clone the repository:**
 
-## Learn More
+    ```bash
+    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+2.  **Navigate to the project directory:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    ```bash
+    cd your-repo-name
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3.  **Install dependencies:**
 
-## Deploy on Vercel
+    ```bash
+    npm install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4.  **Run the development server:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```bash
+    npm run dev
+    ```
+
+5.  **Open the application:**
+    Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+### Login Credentials
+
+Use the following mock credentials to log in:
+
+- **Email**: `admin@eyego.com`
+- **Password**: `password`
+
+---
+
+## Implementation Approach
+
+This project was built with a focus on modern development practices, scalability, and code quality.
+
+### Project Structure
+
+The project uses the **Next.js App Router** with the `src/` directory for a clean and organized codebase. Key directories include:
+
+- `src/app/`: Contains all routing and pages.
+- `src/components/`: Houses reusable React components (`DataTable`, `SalesChart`, `Sidebar`, etc.).
+- `src/store/`: Dedicated to Redux Toolkit setup, including the store configuration and all state slices.
+- `src/lib/`: Holds library code, such as the mock API functions and data definitions.
+
+### State Management with Redux Toolkit
+
+**Redux Toolkit** was chosen for its simplicity and power in managing global application state.
+
+- **Centralized Store**: A single source of truth makes the application's data flow predictable and easy to debug.
+- **Slices**: The state is organized into logical `slices`.
+  - `authSlice`: Manages user authentication state, including login status, user data, and async operation status (`loading`, `failed`).
+  - `salesSlice`: Manages the sales data, including the raw data array and the status of the data fetching operation.
+- **`createAsyncThunk`**: This is used extensively to handle asynchronous actions like logging in and fetching data. It simplifies managing loading and error states, which are reflected gracefully in the UI.
+
+### Component Architecture
+
+- **Modularity**: The UI is broken down into small, reusable components. For example, the `DataTable` is self-contained and manages its own UI state (sorting, filtering, pagination), while receiving its data from the parent page.
+- **Data Processing Pipeline**: The `DataTable` component demonstrates an efficient client-side data processing pipeline. User input triggers a sequence of memoized calculations: **Filter -> Sort -> Paginate**. Using the `useMemo` hook ensures that these potentially expensive operations only re-run when necessary.
+- **Data Visualization**: The `SalesChart` component takes raw transactional data and, using a `useMemo` hook, processes it into a monthly aggregated summary suitable for visualization. This separation of data processing from rendering keeps the component clean.
+
+### Styling and Responsiveness
+
+**Tailwind CSS** was used for its utility-first approach, allowing for rapid development of a custom, responsive design directly within the JSX.
+
+- **Mobile-First**: The design was approached with mobile screens as the primary target.
+- **Responsive Sidebar**: On desktop, the sidebar is fixed and always visible. On mobile, it collapses into a "hamburger" menu and slides in as an overlay, a common and effective pattern for mobile UX.
+- **Responsive Components**: The `DataTable` uses horizontal scrolling on small screens to avoid breaking the layout, and the `SalesChart` uses `Recharts`' `ResponsiveContainer` to adapt its size automatically.

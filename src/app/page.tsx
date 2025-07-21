@@ -1,7 +1,7 @@
 // src/app/page.tsx
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { RootState, AppDispatch } from "@/store/store";
@@ -26,6 +26,7 @@ export default function DashboardPage() {
   const { data: salesData, status: salesStatus } = useSelector(
     (state: RootState) => state.sales
   );
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -79,7 +80,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <main className="flex-1 md:pl-64">
         <div className="p-4 md:p-8">
