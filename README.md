@@ -2,8 +2,7 @@
 
 A responsive sales analytics dashboard built to fulfill the technical assessment for the Eyego Frontend Internship position. This project showcases a modern frontend stack and best practices, including component-based architecture, state management, and a focus on user experience.
 
-![Dashboard Screenshot](path_to_your_screenshot.png)
-_(**Note**: Remember to take a screenshot of your finished dashboard and add it to your repository. Replace the path above with the actual path to your image.)_
+![Dashboard Screenshot](https://github.com/youssefarag2/eyego-dashboard/blob/main/public/dashboard.png)
 
 ---
 
@@ -45,13 +44,13 @@ Follow these instructions to set up and run the project locally.
 1.  **Clone the repository:**
 
     ```bash
-    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+    git clone https://github.com/youssefarag2/eyego-dashboard.git
     ```
 
 2.  **Navigate to the project directory:**
 
     ```bash
-    cd your-repo-name
+    cd eyego-dashboard
     ```
 
 3.  **Install dependencies:**
