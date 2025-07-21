@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { User, mockLogin } from "@/lib/auth"; // Import our new types and function
+import { User, mockLogin } from "@/lib/auth";
 
 interface AuthState {
   isLoggedIn: boolean;
