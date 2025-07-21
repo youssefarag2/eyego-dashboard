@@ -1,42 +1,113 @@
-// src/app/login/page.tsx
+// src/app/page.tsx
 "use client";
 
-import { useDispatch } from "react-redux";
+import { useEffect, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { login } from "@/store/slices/authSlice";
-import { Eye } from "lucide-react"; // A nice icon for "Eyego"
+import { RootState, AppDispatch } from "@/store/store";
+import { fetchSalesData } from "@/store/slices/salesSlice";
+import { Sidebar } from "@/components/Sidebar";
+import { DataTable } from "@/components/DataTable";
+import { SalesChart } from "@/components/SalesChart";
 
-export default function LoginPage() {
-  const dispatch = useDispatch();
+function Loader() {
+  return (
+    <div className="flex justify-center items-center py-16">
+      <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-blue-500"></div>
+    </div>
+  );
+}
+
+export default function DashboardPage() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleLogin = () => {
-    // In the future, we'll add form validation and an API call here
-    dispatch(login());
-    router.push("/"); // Redirect to dashboard after login
-  };
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { data: salesData, status: salesStatus } = useSelector(
+    (state: RootState) => state.sales
+  );
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    }
+  }, [isLoggedIn, router]);
+
+  useEffect(() => {
+    if (isLoggedIn && salesStatus === "idle") {
+      dispatch(fetchSalesData());
+    }
+  }, [isLoggedIn, salesStatus, dispatch]);
+
+  const chartData = useMemo(() => {
+    if (salesStatus !== "succeeded") return [];
+
+    const monthlySales: { [key: string]: number } = {};
+    salesData.forEach((sale) => {
+      const month = new Date(sale.date).toLocaleString("en-US", {
+        month: "short",
+      });
+      monthlySales[month] = (monthlySales[month] || 0) + sale.amount;
+    });
+
+    const monthOrder = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return monthOrder
+      .filter((month) => monthlySales[month] !== undefined)
+      .map((month) => ({
+        name: month,
+        total: Math.floor(monthlySales[month]),
+      }));
+  }, [salesData, salesStatus]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-slate-900">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl mx-4">
-        <div className="flex flex-col items-center gap-2">
-          <div className="bg-blue-500 p-3 rounded-full">
-            <Eye className="text-white" size={32} />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800">Eyego</h1>
-          <p className="text-gray-500">Welcome! Sign in to your dashboard.</p>
-        </div>
+    <div className="flex min-h-screen bg-slate-50">
+      <Sidebar />
 
-        {/* We will add form inputs here later */}
-        <div className="mt-8 space-y-6">
-          <button
-            onClick={handleLogin}
-            className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105"
-          >
-            Sign In
-          </button>
+      <main className="flex-1 md:pl-64">
+        <div className="p-4 md:p-8">
+          <h1 className="text-3xl font-bold text-slate-800 mb-8">Dashboard</h1>
+
+          {salesStatus === "loading" && <Loader />}
+
+          {salesStatus === "succeeded" && (
+            <div className="flex flex-col gap-8">
+              <SalesChart data={chartData} />
+
+              <div>
+                <h2 className="text-2xl font-bold text-slate-800 mb-4">
+                  Recent Sales
+                </h2>
+                <DataTable data={salesData} />
+              </div>
+            </div>
+          )}
+
+          {salesStatus === "failed" && (
+            <div className="text-center p-8 bg-red-100 text-red-700 rounded-xl shadow-sm">
+              <h2 className="text-xl font-semibold">Failed to load data.</h2>
+              <p className="mt-2">Please try refreshing the page.</p>
+            </div>
+          )}
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
